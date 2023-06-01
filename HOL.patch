@@ -347,7 +347,7 @@ diff -urNx '*~' ./List.thy /cygdrive/c/Isabelle2022/src/HOL/List.thy
    moreover have "take i (u@v) = take i (w@z)"
 diff -urNx '*~' ./MacLaurin.thy /cygdrive/c/Isabelle2022/src/HOL/MacLaurin.thy
 --- ./MacLaurin.thy	2023-05-30 11:50:42.798563100 +0900
-+++ /cygdrive/c/Isabelle2022/src/HOL/MacLaurin.thy	2023-06-01 13:41:03.319776100 +0900
++++ /cygdrive/c/Isabelle2022/src/HOL/MacLaurin.thy	2023-06-01 13:42:54.647162000 +0900
 @@ -22,7 +22,7 @@
  
  lemma eq_diff_eq': "x = y - z \<longleftrightarrow> y = x + z"
@@ -387,7 +387,7 @@ diff -urNx '*~' ./MacLaurin.thy /cygdrive/c/Isabelle2022/src/HOL/MacLaurin.thy
    proof (rule Maclaurin_all_lt)
      show "\<forall>m x. ((\<lambda>t. sin (t + 1/2 * real m * pi)) has_real_derivative
 -           sin (x + 1/2 * real (Suc m) * pi)) (at x)"
-+         sin (x + 1/2 * real (Suc m) * pi)) (at x)"
++       sin (x + 1/2 * real (Suc m) * pi)) (at x)"
        by (rule allI derivative_eq_intros | use sin_expansion_lemma in force)+
    qed (use False in auto)
 -  then show ?thesis
