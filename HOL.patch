@@ -229,7 +229,7 @@ diff -urNx '*~' ./Groups_List.thy /cygdrive/c/Isabelle2022/src/HOL/Groups_List.t
  locale monoid_list = monoid
 diff -urNx '*~' ./List.thy /cygdrive/c/Isabelle2022/src/HOL/List.thy
 --- ./List.thy	2023-05-30 11:50:42.721423600 +0900
-+++ /cygdrive/c/Isabelle2022/src/HOL/List.thy	2023-05-31 14:26:38.879025000 +0900
++++ /cygdrive/c/Isabelle2022/src/HOL/List.thy	2023-06-01 12:24:46.988549600 +0900
 @@ -5,7 +5,7 @@
  section \<open>The datatype of finite lists\<close>
  
@@ -256,15 +256,7 @@ diff -urNx '*~' ./List.thy /cygdrive/c/Isabelle2022/src/HOL/List.thy
  
  lemma tl_append_if: "tl (xs @ ys) = (if xs = [] then tl ys else tl xs @ ys)"
  by (simp)
-@@ -1520,6 +1520,7 @@
- in K list_neq end
- \<close>
- 
-+
- subsubsection \<open>\<^const>\<open>filter\<close>\<close>
- 
- lemma filter_append [simp]: "filter P (xs @ ys) = filter P xs @ filter P ys"
-@@ -1591,7 +1592,7 @@
+@@ -1591,7 +1591,7 @@
    proof (cases)
      assume "p x"
      hence eq: "?S' = insert 0 (Suc ` ?S)"
@@ -273,32 +265,16 @@ diff -urNx '*~' ./List.thy /cygdrive/c/Isabelle2022/src/HOL/List.thy
      have "length (filter p (x # xs)) = Suc(card ?S)"
        using Cons \<open>p x\<close> by simp
      also have "\<dots> = Suc(card(Suc ` ?S))" using fin
-@@ -1854,7 +1855,6 @@
-   qed
- qed
- 
--
- subsubsection \<open>\<^const>\<open>list_update\<close>\<close>
- 
- lemma length_list_update [simp]: "length(xs[i:=x]) = length xs"
-@@ -2376,7 +2376,6 @@
- lemma nth_image: "l \<le> size xs \<Longrightarrow> nth xs ` {0..<l} = set(take l xs)"
-   by (simp add: set_conv_nth) force
- 
--
- subsubsection \<open>\<^const>\<open>takeWhile\<close> and \<^const>\<open>dropWhile\<close>\<close>
- 
- lemma length_takeWhile_le: "length (takeWhile P xs) \<le> length xs"
-@@ -2440,7 +2439,7 @@
+@@ -2440,7 +2440,7 @@
    by (induct xs) (auto split: if_split_asm)
  
  lemma set_takeWhileD: "x \<in> set (takeWhile P xs) \<Longrightarrow> x \<in> set xs \<and> P x"
 -  by (induct xs) (auto split: if_split_asm)
-+  by (induct xs;auto) 
++  by (induct xs) auto 
  
  lemma takeWhile_eq_all_conv[simp]:
    "(takeWhile P xs = xs) = (\<forall>x \<in> set xs. P x)"
-@@ -2596,7 +2595,7 @@
+@@ -2596,7 +2596,7 @@
  
  lemma zip_Cons1:
    "zip (x#xs) ys = (case ys of [] \<Rightarrow> [] | y#ys \<Rightarrow> (x,y)#zip xs ys)"
@@ -307,39 +283,13 @@ diff -urNx '*~' ./List.thy /cygdrive/c/Isabelle2022/src/HOL/List.thy
  
  lemma length_zip [simp]:
    "length (zip xs ys) = min (length xs) (length ys)"
-@@ -3072,7 +3071,6 @@
-   then show "xs \<in> ?L" by induct auto
- qed
- 
--
- subsubsection \<open>\<^const>\<open>fold\<close> with natural argument order\<close>
- 
- lemma fold_simps [code]: \<comment> \<open>eta-expanded variant for generated code -- enables tail-recursion optimisation in Scala\<close>
-@@ -3421,7 +3419,6 @@
-     by simp
- qed
- 
--
- subsubsection \<open>\<open>upto\<close>: interval-list on \<^typ>\<open>int\<close>\<close>
- 
- function upto :: "int \<Rightarrow> int \<Rightarrow> int list" ("(1[_../_])") where
-@@ -4159,7 +4156,7 @@
- 
- lemma remdups_adj_append'': "xs \<noteq> []
-   \<Longrightarrow> remdups_adj (xs @ ys) = remdups_adj xs @ remdups_adj (dropWhile (\<lambda>y. y = last xs) ys)"
--by (induction xs rule: remdups_adj.induct) (auto simp: remdups_adj_Cons')
-+  by (induction xs rule: remdups_adj.induct) (auto simp: remdups_adj_Cons')
- 
- 
- subsection \<open>@{const distinct_adj}\<close>
-@@ -4462,9 +4459,14 @@
+@@ -4462,9 +4462,13 @@
    distinct (removeAll [] xs) \<and>
    (\<forall>ys. ys \<in> set xs \<longrightarrow> distinct ys) \<and>
    (\<forall>ys zs. ys \<in> set xs \<and> zs \<in> set xs \<and> ys \<noteq> zs \<longrightarrow> set ys \<inter> set zs = {})"
 -apply (induct xs)
 - apply(simp_all, safe, auto)
 -by (metis Int_iff UN_I empty_iff equals0I set_empty)
-+  apply (fold disjnt_def)
 +proof(induct xs)
 +  case Nil
 +  then show ?case by simp
@@ -350,15 +300,7 @@ diff -urNx '*~' ./List.thy /cygdrive/c/Isabelle2022/src/HOL/List.thy
  
  
  subsubsection \<open>\<^const>\<open>replicate\<close>\<close>
-@@ -4946,7 +4948,6 @@
-   with Cons show ?case by(simp add: nths_Cons cong:filter_cong)
- qed
- 
--
- subsubsection \<open>\<^const>\<open>subseqs\<close> and \<^const>\<open>List.n_lists\<close>\<close>
- 
- lemma length_subseqs: "length (subseqs xs) = 2 ^ length xs"
-@@ -5050,7 +5051,16 @@
+@@ -5050,7 +5054,16 @@
    "z # zs \<in> shuffles xs ys \<longleftrightarrow>
      (xs \<noteq> [] \<and> hd xs = z \<and> zs \<in> shuffles (tl xs) ys \<or>
       ys \<noteq> [] \<and> hd ys = z \<and> zs \<in> shuffles xs (tl ys))"
@@ -376,7 +318,7 @@ diff -urNx '*~' ./List.thy /cygdrive/c/Isabelle2022/src/HOL/List.thy
  
  lemma splice_in_shuffles [simp, intro]: "splice xs ys \<in> shuffles xs ys"
    by (induction xs ys rule: splice.induct) (simp_all add: Cons_in_shuffles_iff shuffles_commutes)
-@@ -5197,20 +5207,29 @@
+@@ -5197,13 +5210,12 @@
    (is "max _ ?foldB = Suc (max _ ?foldA)")
  proof (cases "(filter (\<lambda>ys. ys \<noteq> []) xss) = []")
    case True
@@ -386,35 +328,15 @@ diff -urNx '*~' ./List.thy /cygdrive/c/Isabelle2022/src/HOL/List.thy
 -    case (Cons x xs)
 -    then have "x = []" by (cases x) auto
 -    with Cons show ?case by auto
--  qed simp
--  thus ?thesis using True by simp
-+    case Nil
-+    then show ?case by simp
-+  next
 +    case (Cons a xsss)
 +    then show ?case 
 +      by (cases a; simp add: filter_def)
-+  qed
+   qed simp
+-  thus ?thesis using True by simp
  next
    case False
  
-   have foldA: "?foldA = foldr (\<lambda>x. max (length x)) (filter (\<lambda>ys. ys \<noteq> []) xss) 0 - 1"
--    by (induct xss) auto
-+  proof(induct xss)
-+    case Nil
-+    then show ?case by simp
-+  next
-+    case IH: (Cons a xss)
-+    then show ?case by (cases a; simp add: filter_def)
-+  qed
-+
-   have foldB: "?foldB = foldr (\<lambda>x. max (length x)) (filter (\<lambda>ys. ys \<noteq> []) xss) 0"
--    by (induct xss) auto
-+    by (induct xss; simp) 
- 
-   have "0 < ?foldB"
-   proof -
-@@ -6363,7 +6382,7 @@
+@@ -6363,7 +6375,7 @@
  
  lemma sorted_list_of_set_lessThan_Suc [simp]:
    "sorted_list_of_set {..<Suc k} = sorted_list_of_set {..<k} @ [k]"
@@ -423,7 +345,7 @@ diff -urNx '*~' ./List.thy /cygdrive/c/Isabelle2022/src/HOL/List.thy
  
  lemma sorted_list_of_set_atMost_Suc [simp]:
    "sorted_list_of_set {..Suc k} = sorted_list_of_set {..k} @ [Suc k]"
-@@ -6835,7 +6854,7 @@
+@@ -6835,7 +6847,7 @@
      by blast
    hence "((u@v)!i, (w@z)!i) \<in> r"
      unfolding nth_append using less_le_trans[OF \<open>i < length w\<close> assms(2)] \<open>(u!i,w!i) \<in> r\<close>
